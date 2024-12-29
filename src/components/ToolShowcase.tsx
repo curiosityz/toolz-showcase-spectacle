@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import gsap from "gsap";
 import { Brain, MessageSquare, Code, Wand2 } from "lucide-react";
 
@@ -58,44 +57,29 @@ const ToolShowcase = () => {
           Experience Our Tools
         </h2>
 
-        <div className="relative">
-          <Carousel className="w-full max-w-5xl mx-auto">
-            <CarouselContent>
-              {tools.map((tool, index) => (
-                <CarouselItem key={tool.title}>
-                  <div className="tool-frame p-6 rounded-2xl bg-gradient-to-br from-toolz-blue/20 to-toolz-red/20 backdrop-blur-xl border border-toolz-blue/30">
-                    <div className="flex items-center gap-4 mb-6">
-                      <tool.icon className="w-8 h-8 text-toolz-blue" />
-                      <div>
-                        <h3 className="text-2xl font-bold text-white">{tool.title}</h3>
-                        <p className="text-gray-300">{tool.description}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30 bg-toolz-dark">
-                      <iframe
-                        src={tool.demoUrl}
-                        className="absolute inset-0 w-full h-full bg-toolz-dark"
-                        title={`${tool.title} Demo`}
-                      />
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <CarouselPrevious className="relative inset-0 translate-y-0 bg-toolz-blue hover:bg-toolz-blue/80 border-none text-white" />
-              <div className="flex gap-2">
-                {tools.map((_, index) => (
-                  <div
-                    key={index}
-                    className="w-2 h-2 rounded-full bg-toolz-blue/30"
-                  />
-                ))}
+        <div className="space-y-8 max-w-5xl mx-auto">
+          {tools.map((tool) => (
+            <div
+              key={tool.title}
+              className="tool-frame p-6 rounded-2xl bg-gradient-to-br from-toolz-blue/20 to-toolz-red/20 backdrop-blur-xl border border-toolz-blue/30"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <tool.icon className="w-8 h-8 text-toolz-blue" />
+                <div>
+                  <h3 className="text-2xl font-bold text-white">{tool.title}</h3>
+                  <p className="text-gray-300">{tool.description}</p>
+                </div>
               </div>
-              <CarouselNext className="relative inset-0 translate-y-0 bg-toolz-blue hover:bg-toolz-blue/80 border-none text-white" />
+              
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30 bg-toolz-dark">
+                <iframe
+                  src={tool.demoUrl}
+                  className="absolute inset-0 w-full h-full bg-toolz-dark"
+                  title={`${tool.title} Demo`}
+                />
+              </div>
             </div>
-          </Carousel>
+          ))}
         </div>
       </div>
     </section>
