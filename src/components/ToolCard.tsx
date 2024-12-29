@@ -1,15 +1,16 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Card } from "@/components/ui/card";
+import { LucideIcon } from "lucide-react";
 
 interface ToolCardProps {
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   delay?: number;
 }
 
-const ToolCard = ({ title, description, icon, delay = 0 }: ToolCardProps) => {
+const ToolCard = ({ title, description, icon: Icon, delay = 0 }: ToolCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const ToolCard = ({ title, description, icon, delay = 0 }: ToolCardProps) => {
     >
       <div className="absolute inset-0 bg-gradient-to-br from-toolz-blue/10 to-toolz-red/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10">
-        <div className="text-3xl mb-4 text-toolz-blue">{icon}</div>
+        <Icon className="w-8 h-8 mb-4 text-toolz-blue" />
         <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
         <p className="text-gray-300">{description}</p>
       </div>
