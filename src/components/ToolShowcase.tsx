@@ -58,33 +58,45 @@ const ToolShowcase = () => {
           Experience Our Tools
         </h2>
 
-        <Carousel className="w-full max-w-5xl mx-auto">
-          <CarouselContent>
-            {tools.map((tool, index) => (
-              <CarouselItem key={tool.title}>
-                <div className="tool-frame p-6 rounded-2xl bg-gradient-to-br from-toolz-blue/20 to-toolz-red/20 backdrop-blur-xl border border-toolz-blue/30">
-                  <div className="flex items-center gap-4 mb-6">
-                    <tool.icon className="w-8 h-8 text-toolz-blue" />
-                    <div>
-                      <h3 className="text-2xl font-bold text-white">{tool.title}</h3>
-                      <p className="text-gray-300">{tool.description}</p>
+        <div className="relative">
+          <Carousel className="w-full max-w-5xl mx-auto">
+            <CarouselContent>
+              {tools.map((tool, index) => (
+                <CarouselItem key={tool.title}>
+                  <div className="tool-frame p-6 rounded-2xl bg-gradient-to-br from-toolz-blue/20 to-toolz-red/20 backdrop-blur-xl border border-toolz-blue/30">
+                    <div className="flex items-center gap-4 mb-6">
+                      <tool.icon className="w-8 h-8 text-toolz-blue" />
+                      <div>
+                        <h3 className="text-2xl font-bold text-white">{tool.title}</h3>
+                        <p className="text-gray-300">{tool.description}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30 bg-toolz-dark">
+                      <iframe
+                        src={tool.demoUrl}
+                        className="absolute inset-0 w-full h-full bg-toolz-dark"
+                        title={`${tool.title} Demo`}
+                      />
                     </div>
                   </div>
-                  
-                  <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30">
-                    <iframe
-                      src={tool.demoUrl}
-                      className="absolute inset-0 w-full h-full"
-                      title={`${tool.title} Demo`}
-                    />
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="bg-toolz-blue/20 hover:bg-toolz-blue/40 border-toolz-blue/30" />
-          <CarouselNext className="bg-toolz-blue/20 hover:bg-toolz-blue/40 border-toolz-blue/30" />
-        </Carousel>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <CarouselPrevious className="relative inset-0 translate-y-0 bg-toolz-blue hover:bg-toolz-blue/80 border-none text-white" />
+              <div className="flex gap-2">
+                {tools.map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-2 h-2 rounded-full bg-toolz-blue/30"
+                  />
+                ))}
+              </div>
+              <CarouselNext className="relative inset-0 translate-y-0 bg-toolz-blue hover:bg-toolz-blue/80 border-none text-white" />
+            </div>
+          </Carousel>
+        </div>
       </div>
     </section>
   );
