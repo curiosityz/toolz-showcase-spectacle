@@ -1,0 +1,45 @@
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { Card } from "@/components/ui/card";
+
+interface ToolCardProps {
+  title: string;
+  description: string;
+  icon: string;
+  delay?: number;
+}
+
+const ToolCard = ({ title, description, icon, delay = 0 }: ToolCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.from(cardRef.current, {
+      scrollTrigger: {
+        trigger: cardRef.current,
+        start: "top bottom-=100",
+        toggleActions: "play none none reverse",
+      },
+      y: 100,
+      opacity: 0,
+      duration: 1,
+      delay,
+      ease: "power4.out",
+    });
+  }, [delay]);
+
+  return (
+    <Card
+      ref={cardRef}
+      className="relative overflow-hidden p-6 backdrop-blur-xl bg-white/10 border-toolz-blue/20 hover:border-toolz-blue/40 transition-all duration-300 group"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-toolz-blue/10 to-toolz-red/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10">
+        <div className="text-3xl mb-4 text-toolz-blue">{icon}</div>
+        <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
+        <p className="text-gray-300">{description}</p>
+      </div>
+    </Card>
+  );
+};
+
+export default ToolCard;
