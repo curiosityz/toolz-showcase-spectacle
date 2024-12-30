@@ -7,7 +7,7 @@ const tools = [
     title: "Landing Page Analyzer",
     description: "Get instant AI-powered feedback on your landing page",
     icon: Globe,
-    demoUrl: "https://demo.toolz.digital/landing-page-analyzer",
+    demoUrl: "/landing-page-analyzer",
     longDescription: "Our Landing Page Analyzer uses advanced AI to evaluate and provide actionable insights for your landing pages. Get detailed feedback on design, content, conversion optimization, and SEO elements. Perfect for marketers and designers looking to optimize their landing pages for better performance and conversion rates.",
   },
   {
