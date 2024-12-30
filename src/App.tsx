@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import LandingPageAnalyzer from "./pages/LandingPageAnalyzer";
+import AutonomousResearch from "./pages/AutonomousResearch";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/landing-page-analyzer" element={<LandingPageAnalyzer />} />
+          <Route path="/autonomous-research" element={<AutonomousResearch />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { Brain, MessageSquare, Code, Wand2, Globe } from "lucide-react";
+import { Brain, MessageSquare, Code, Wand2, Globe, Search } from "lucide-react";
 
 const tools = [
   {
@@ -9,6 +9,13 @@ const tools = [
     icon: Globe,
     demoUrl: "/landing-page-analyzer",
     longDescription: "Our Landing Page Analyzer uses advanced AI to evaluate and provide actionable insights for your landing pages. Get detailed feedback on design, content, conversion optimization, and SEO elements. Perfect for marketers and designers looking to optimize their landing pages for better performance and conversion rates.",
+  },
+  {
+    title: "Autonomous Research",
+    description: "AI-powered autonomous research system",
+    icon: Search,
+    demoUrl: "/autonomous-research",
+    longDescription: "Experience the future of research with our Autonomous Research System. Powered by Google's Gemini AI, this tool conducts comprehensive research, generates insights, and autonomously explores related topics. Perfect for researchers, analysts, and anyone seeking deep understanding of complex subjects.",
   },
   {
     title: "AI Text Generator",
