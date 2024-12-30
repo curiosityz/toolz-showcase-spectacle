@@ -18,11 +18,11 @@ const tools = [
     longDescription: "Experience the future of research with our Autonomous Research System. Powered by Google's Gemini AI, this tool conducts comprehensive research, generates insights, and autonomously explores related topics. Perfect for researchers, analysts, and anyone seeking deep understanding of complex subjects.",
   },
   {
-    title: "AI Text Generator",
-    description: "Create compelling content with our advanced language model",
+    title: "LLM Social Experiment Lab",
+    description: "Run controlled studies with LLM participants",
     icon: Brain,
-    demoUrl: "https://demo.toolz.digital/text-generator",
-    longDescription: "Our AI Text Generator represents the cutting edge of natural language processing. Built on advanced transformer architecture, it helps content creators, marketers, and writers generate high-quality content in seconds. Whether you need blog posts, product descriptions, or creative stories, this tool adapts to your style and tone while maintaining coherence and engagement.",
+    demoUrl: "/experiment-lab",
+    longDescription: "Design and conduct sophisticated social experiments using LLM participants. Configure experiment parameters, analyze results, and gain insights into human behavior and decision-making patterns. Perfect for researchers, social scientists, and anyone interested in understanding social dynamics through AI-powered experimentation.",
   },
   {
     title: "Smart Chat Assistant",
