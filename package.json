@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
     "render": "vite build && vite preview",
-    "homepage": "/dist/"
+    "homepage": "./"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
