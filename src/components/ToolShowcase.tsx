@@ -78,18 +78,23 @@ const ToolShowcase = () => {
     });
 
     // Initialize advanced-iframe
-    if (window.aiModifyParent) {
-      window.aiModifyParent();
-    }
+    const initializeIframes = () => {
+      if (window.aiModifyParent) {
+        window.aiModifyParent();
+      }
+    };
 
-    return () => ctx.revert();
+    // Initial initialization
+    initializeIframes();
+
+    // Set up a periodic check for iframe initialization
+    const checkInterval = setInterval(initializeIframes, 1000);
+
+    return () => {
+      ctx.revert();
+      clearInterval(checkInterval);
+    };
   }, []);
-
-  const handleIframeLoad = (id: string) => {
-    if (window.aiModifyParent) {
-      window.aiModifyParent();
-    }
-  };
 
   return (
     <section ref={showcaseRef} className="py-20 bg-toolz-dark">
@@ -121,7 +126,9 @@ const ToolShowcase = () => {
                     data-transparency="true"
                     data-hide-elements="iframe"
                     data-iframe-element-id={`iframe_${index}`}
-                    data-onload={`handleIframeLoad('advanced_iframe_${index}')`}
+                    data-enable-hide-page-until-loaded="true"
+                    data-onload={`window.aiModifyParent && window.aiModifyParent()`}
+                    style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
                   />
                 </div>
               </div>
