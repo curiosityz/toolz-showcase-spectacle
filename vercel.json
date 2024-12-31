@@ -5,11 +5,11 @@
       "headers": [
         {
           "key": "X-Frame-Options",
-          "value": "ALLOW-FROM https://toolz.digital/"
+          "value": "SAMEORIGIN"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://toolz.digital/"
+          "value": "frame-ancestors 'self' https://toolz.digital https://www.toolz.digital"
         },
         {
           "key": "Access-Control-Allow-Origin",
