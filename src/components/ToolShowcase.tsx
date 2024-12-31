@@ -7,21 +7,21 @@ const tools = [
     title: "Landing Page Analyzer",
     description: "Get instant AI-powered feedback on your landing page",
     icon: Globe,
-    demoUrl: "/landing-page-analyzer",
+    demoUrl: "https://www.toolz.digital/landing-page-analyzer",
     longDescription: "Our Landing Page Analyzer uses advanced AI to evaluate and provide actionable insights for your landing pages. Get detailed feedback on design, content, conversion optimization, and SEO elements. Perfect for marketers and designers looking to optimize their landing pages for better performance and conversion rates.",
   },
   {
     title: "Autonomous Research",
     description: "AI-powered autonomous research system",
     icon: Search,
-    demoUrl: "/autonomous-research",
+    demoUrl: "https://www.toolz.digital/autonomous-research",
     longDescription: "Experience the future of research with our Autonomous Research System. Powered by Google's Gemini AI, this tool conducts comprehensive research, generates insights, and autonomously explores related topics. Perfect for researchers, analysts, and anyone seeking deep understanding of complex subjects.",
   },
   {
     title: "LLM Social Experiment Lab",
     description: "Run controlled studies with LLM participants",
     icon: Brain,
-    demoUrl: "/experiment-lab",
+    demoUrl: "https://www.toolz.digital/experiment-lab",
     longDescription: "Design and conduct sophisticated social experiments using LLM participants. Configure experiment parameters, analyze results, and gain insights into human behavior and decision-making patterns. Perfect for researchers, social scientists, and anyone interested in understanding social dynamics through AI-powered experimentation.",
   },
   {
@@ -80,6 +80,10 @@ const ToolShowcase = () => {
     return () => ctx.revert();
   }, []);
 
+  const handleIframeError = (title: string) => {
+    console.warn(`Failed to load iframe for ${title}`);
+  };
+
   return (
     <section ref={showcaseRef} className="py-20 bg-toolz-dark">
       <div className="container mx-auto px-4">
@@ -104,6 +108,9 @@ const ToolShowcase = () => {
                     src={tool.demoUrl}
                     className="absolute inset-0 w-full h-full bg-toolz-dark"
                     title={`${tool.title} Demo`}
+                    onError={() => handleIframeError(tool.title)}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                   />
                 </div>
               </div>
