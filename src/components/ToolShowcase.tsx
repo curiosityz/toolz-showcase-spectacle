@@ -77,11 +77,18 @@ const ToolShowcase = () => {
       });
     });
 
+    // Initialize advanced-iframe
+    if (window.aiModifyParent) {
+      window.aiModifyParent();
+    }
+
     return () => ctx.revert();
   }, []);
 
-  const handleIframeError = (title: string) => {
-    console.warn(`Failed to load iframe for ${title}`);
+  const handleIframeLoad = (id: string) => {
+    if (window.aiModifyParent) {
+      window.aiModifyParent();
+    }
   };
 
   return (
@@ -92,7 +99,7 @@ const ToolShowcase = () => {
         </h2>
 
         <div className="space-y-20 max-w-5xl mx-auto">
-          {tools.map((tool) => (
+          {tools.map((tool, index) => (
             <div key={tool.title} className="space-y-8">
               <div className="tool-frame p-6 rounded-2xl bg-gradient-to-br from-toolz-blue/20 to-toolz-red/20 backdrop-blur-xl border border-toolz-blue/30">
                 <div className="flex items-center gap-4 mb-6">
@@ -104,13 +111,17 @@ const ToolShowcase = () => {
                 </div>
                 
                 <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30 bg-toolz-dark">
-                  <iframe
-                    src={tool.demoUrl}
-                    className="absolute inset-0 w-full h-full bg-toolz-dark"
-                    title={`${tool.title} Demo`}
-                    onError={() => handleIframeError(tool.title)}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                  <div
+                    id={`advanced_iframe_${index}`}
+                    className="ai-class"
+                    data-src={tool.demoUrl}
+                    data-width="100%"
+                    data-height="100%"
+                    data-scrolling="no"
+                    data-transparency="true"
+                    data-hide-elements="iframe"
+                    data-iframe-element-id={`iframe_${index}`}
+                    data-onload={`handleIframeLoad('advanced_iframe_${index}')`}
                   />
                 </div>
               </div>
@@ -127,5 +138,12 @@ const ToolShowcase = () => {
     </section>
   );
 };
+
+// Add type declaration for window.aiModifyParent
+declare global {
+  interface Window {
+    aiModifyParent?: () => void;
+  }
+}
 
 export default ToolShowcase;
