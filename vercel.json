@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "X-Frame-Options",
-          "value": "ALLOW-FROM https://toolz.digital"
+          "value": "ALLOW-FROM https://toolz.digital https://www.toolz.digital"
         },
         {
           "key": "Content-Security-Policy",
@@ -13,7 +13,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://toolz.digital"
+          "value": "https://www.toolz.digital"
         },
         {
           "key": "Access-Control-Allow-Methods",
