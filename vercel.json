@@ -5,15 +5,23 @@
       "headers": [
         {
           "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
+          "value": "ALLOW-FROM https://toolz.digital"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://toolz.digital https://www.toolz.digital"
+          "value": "frame-ancestors 'self' https://toolz.digital https://www.toolz.digital https://*.toolz.digital"
         },
         {
           "key": "Access-Control-Allow-Origin",
           "value": "https://toolz.digital"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Accept"
         }
       ]
     }
