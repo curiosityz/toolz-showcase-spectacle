@@ -77,22 +77,27 @@ const ToolShowcase = () => {
       });
     });
 
-    // Initialize advanced-iframe
+    // Function to initialize iframes
     const initializeIframes = () => {
-      if (window.aiModifyParent) {
-        window.aiModifyParent();
-      }
+      tools.forEach((_, index) => {
+        const iframe = document.createElement('iframe');
+        iframe.src = tools[index].demoUrl;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        
+        const container = document.getElementById(`iframe-container-${index}`);
+        if (container && !container.querySelector('iframe')) {
+          container.appendChild(iframe);
+        }
+      });
     };
 
-    // Initial initialization
-    initializeIframes();
-
-    // Set up a periodic check for iframe initialization
-    const checkInterval = setInterval(initializeIframes, 1000);
+    // Initial initialization with a slight delay to ensure DOM is ready
+    setTimeout(initializeIframes, 500);
 
     return () => {
       ctx.revert();
-      clearInterval(checkInterval);
     };
   }, []);
 
@@ -117,18 +122,8 @@ const ToolShowcase = () => {
                 
                 <div className="relative aspect-video rounded-lg overflow-hidden border border-toolz-blue/30 bg-toolz-dark">
                   <div
-                    id={`advanced_iframe_${index}`}
-                    className="ai-class"
-                    data-src={tool.demoUrl}
-                    data-width="100%"
-                    data-height="100%"
-                    data-scrolling="no"
-                    data-transparency="true"
-                    data-hide-elements="iframe"
-                    data-iframe-element-id={`iframe_${index}`}
-                    data-enable-hide-page-until-loaded="true"
-                    data-onload={`window.aiModifyParent && window.aiModifyParent()`}
-                    style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                    id={`iframe-container-${index}`}
+                    className="absolute inset-0"
                   />
                 </div>
               </div>
