@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { ToolNavigation } from "@/components/ToolNavigation";
 
 const LandingPageAnalyzer = () => {
   const [url, setUrl] = useState("");
@@ -101,91 +102,102 @@ const LandingPageAnalyzer = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4 text-white">Advanced Landing Page Analyzer</h1>
-        <p className="text-gray-300">Comprehensive AI-powered analysis and recommendations for your landing page</p>
-      </div>
-
-      <Card className="p-6 space-y-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20">
-        <Input
-          type="text"
-          placeholder="Enter your Google API Key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className="bg-white/5"
-        />
-
-        <Input
-          type="url"
-          placeholder="Enter your landing page URL (e.g., https://example.com)"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="bg-white/5"
-        />
-
-        <Select value={analysisDepth} onValueChange={setAnalysisDepth}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select analysis depth" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="quick">Quick Analysis (Free)</SelectItem>
-            <SelectItem value="comprehensive" disabled={!apiKey}>
-              Comprehensive Analysis
-            </SelectItem>
-            <SelectItem value="expert" disabled={!apiKey}>
-              Expert-Level Analysis
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
-        <div className="space-y-4">
-          <h4 className="font-medium text-white">Focus Areas</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {focusAreas.map((area) => (
-              <div key={area.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={area.id}
-                  checked={selectedAreas.includes(area.id)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setSelectedAreas([...selectedAreas, area.id]);
-                    } else {
-                      setSelectedAreas(selectedAreas.filter((id) => id !== area.id));
-                    }
-                  }}
-                />
-                <label htmlFor={area.id} className="text-sm text-gray-300">
-                  {area.label}
-                </label>
-              </div>
-            ))}
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-toolz-dark via-toolz-dark/95 to-toolz-dark pt-20">
+      <ToolNavigation />
+      
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-4xl font-bold mb-4 text-white bg-clip-text text-transparent bg-gradient-to-r from-toolz-blue to-toolz-red animate-glow">
+            Advanced Landing Page Analyzer
+          </h1>
+          <p className="text-gray-300 text-lg">
+            Comprehensive AI-powered analysis and recommendations for your landing page
+          </p>
         </div>
 
-        <Button
-          onClick={analyzePage}
-          disabled={loading}
-          className="w-full bg-toolz-blue hover:bg-toolz-blue/80"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Analyzing...
-            </>
-          ) : (
-            "Analyze Landing Page"
-          )}
-        </Button>
-      </Card>
+        <Card className="p-8 space-y-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 hover:border-toolz-blue/40 transition-all duration-300">
+          <div className="space-y-4">
+            <Input
+              type="text"
+              placeholder="Enter your Google API Key"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="bg-white/5 border-toolz-blue/20 text-white placeholder:text-gray-400"
+            />
 
-      {results && (
-        <Card className="mt-8 p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20">
-          <pre className="text-sm text-gray-300 overflow-x-auto">
-            {JSON.stringify(results, null, 2)}
-          </pre>
+            <Input
+              type="url"
+              placeholder="Enter your landing page URL (e.g., https://example.com)"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="bg-white/5 border-toolz-blue/20 text-white placeholder:text-gray-400"
+            />
+
+            <Select value={analysisDepth} onValueChange={setAnalysisDepth}>
+              <SelectTrigger className="bg-white/5 border-toolz-blue/20 text-white">
+                <SelectValue placeholder="Select analysis depth" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="quick">Quick Analysis (Free)</SelectItem>
+                <SelectItem value="comprehensive" disabled={!apiKey}>
+                  Comprehensive Analysis
+                </SelectItem>
+                <SelectItem value="expert" disabled={!apiKey}>
+                  Expert-Level Analysis
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="space-y-4">
+              <h4 className="font-medium text-white">Focus Areas</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {focusAreas.map((area) => (
+                  <div key={area.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={area.id}
+                      checked={selectedAreas.includes(area.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedAreas([...selectedAreas, area.id]);
+                        } else {
+                          setSelectedAreas(selectedAreas.filter((id) => id !== area.id));
+                        }
+                      }}
+                      className="border-toolz-blue/40 data-[state=checked]:bg-toolz-blue"
+                    />
+                    <label htmlFor={area.id} className="text-sm text-gray-300 cursor-pointer">
+                      {area.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button
+              onClick={analyzePage}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-toolz-blue to-toolz-red hover:opacity-90 transition-opacity"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                "Analyze Landing Page"
+              )}
+            </Button>
+          </div>
         </Card>
-      )}
+
+        {results && (
+          <Card className="mt-8 p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 animate-fade-in">
+            <pre className="text-sm text-gray-300 overflow-x-auto">
+              {JSON.stringify(results, null, 2)}
+            </pre>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };
