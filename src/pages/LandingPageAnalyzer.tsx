@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
 import { ToolNavigation } from "@/components/ToolNavigation";
+import { AnalysisForm } from "@/components/landing-analyzer/AnalysisForm";
+import { fetchPageContent, analyzePage } from "@/utils/pageAnalysis";
 
 const LandingPageAnalyzer = () => {
   const [url, setUrl] = useState("");
@@ -24,7 +21,7 @@ const LandingPageAnalyzer = () => {
 
   const [selectedAreas, setSelectedAreas] = useState(focusAreas.map(area => area.id));
 
-  const analyzePage = async () => {
+  const handleAnalysis = async () => {
     if (!url) {
       toast({
         title: "Error",
@@ -45,45 +42,9 @@ const LandingPageAnalyzer = () => {
 
     setLoading(true);
     try {
-      const corsProxy = "https://cors-anywhere.herokuapp.com/";
-      const pageResponse = await fetch(corsProxy + url, {
-        headers: {
-          Origin: window.location.origin,
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      });
-
-      if (!pageResponse.ok) {
-        throw new Error(`Failed to fetch the landing page (Status: ${pageResponse.status})`);
-      }
-
-      const pageContent = await pageResponse.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(pageContent, "text/html");
-      const textContent = doc.body.innerText || doc.body.textContent || "";
-
-      // Call Gemini API
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `You are an expert landing page analyzer. Analyze this content: ${textContent}`,
-              }],
-            }],
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to analyze the page");
-      }
-
-      const data = await response.json();
-      setResults(data);
+      const pageContent = await fetchPageContent(url);
+      const analysisResults = await analyzePage(pageContent, apiKey);
+      setResults(analysisResults);
       
       toast({
         title: "Analysis Complete",
@@ -116,78 +77,18 @@ const LandingPageAnalyzer = () => {
         </div>
 
         <Card className="p-8 space-y-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 hover:border-toolz-blue/40 transition-all duration-300">
-          <div className="space-y-4">
-            <Input
-              type="text"
-              placeholder="Enter your Google API Key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="bg-white/5 border-toolz-blue/20 text-white placeholder:text-gray-400"
-            />
-
-            <Input
-              type="url"
-              placeholder="Enter your landing page URL (e.g., https://example.com)"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="bg-white/5 border-toolz-blue/20 text-white placeholder:text-gray-400"
-            />
-
-            <Select value={analysisDepth} onValueChange={setAnalysisDepth}>
-              <SelectTrigger className="bg-white/5 border-toolz-blue/20 text-white">
-                <SelectValue placeholder="Select analysis depth" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="quick">Quick Analysis (Free)</SelectItem>
-                <SelectItem value="comprehensive" disabled={!apiKey}>
-                  Comprehensive Analysis
-                </SelectItem>
-                <SelectItem value="expert" disabled={!apiKey}>
-                  Expert-Level Analysis
-                </SelectItem>
-              </SelectContent>
-            </Select>
-
-            <div className="space-y-4">
-              <h4 className="font-medium text-white">Focus Areas</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {focusAreas.map((area) => (
-                  <div key={area.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={area.id}
-                      checked={selectedAreas.includes(area.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedAreas([...selectedAreas, area.id]);
-                        } else {
-                          setSelectedAreas(selectedAreas.filter((id) => id !== area.id));
-                        }
-                      }}
-                      className="border-toolz-blue/40 data-[state=checked]:bg-toolz-blue"
-                    />
-                    <label htmlFor={area.id} className="text-sm text-gray-300 cursor-pointer">
-                      {area.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Button
-              onClick={analyzePage}
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-toolz-blue to-toolz-red hover:opacity-90 transition-opacity"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                "Analyze Landing Page"
-              )}
-            </Button>
-          </div>
+          <AnalysisForm
+            url={url}
+            setUrl={setUrl}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            analysisDepth={analysisDepth}
+            setAnalysisDepth={setAnalysisDepth}
+            selectedAreas={selectedAreas}
+            setSelectedAreas={setSelectedAreas}
+            onAnalyze={handleAnalysis}
+            loading={loading}
+          />
         </Card>
 
         {results && (
