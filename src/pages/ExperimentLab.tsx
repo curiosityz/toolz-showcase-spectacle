@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
+import { ExperimentForm } from "@/components/experiment-lab/ExperimentForm";
 
 const ExperimentLab = () => {
   const { toast } = useToast();
@@ -24,7 +24,6 @@ const ExperimentLab = () => {
 
     setLoading(true);
     try {
-      // Simulate experiment running
       await new Promise(resolve => setTimeout(resolve, 2000));
       toast({
         title: "Experiment Complete",
@@ -42,70 +41,19 @@ const ExperimentLab = () => {
   };
 
   return (
-    <div className="min-h-screen bg-toolz-dark text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">LLM Social Experiment Lab</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <Card className="p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20">
-            <h3 className="text-xl font-semibold mb-4">Research Purpose</h3>
-            <Textarea
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              placeholder="Describe the purpose of your experiment..."
-              className="min-h-[150px] mb-6 bg-white/5"
-            />
-            
-            <h3 className="text-xl font-semibold mb-4">Methodology</h3>
-            <Textarea
-              value={methodology}
-              onChange={(e) => setMethodology(e.target.value)}
-              placeholder="Describe your research methodology..."
-              className="min-h-[150px] bg-white/5"
-            />
-          </Card>
-
-          <Card className="p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20">
-            <h3 className="text-xl font-semibold mb-4">Experiment Configuration</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Number of Participants
-                </label>
-                <Input
-                  type="number"
-                  value={participantCount}
-                  onChange={(e) => setParticipantCount(Number(e.target.value))}
-                  min={3}
-                  max={10}
-                  className="bg-white/5"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Configuration File
-                </label>
-                <Input
-                  type="file"
-                  accept=".json"
-                  className="bg-white/5"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      // Handle file upload
-                      toast({
-                        title: "File Selected",
-                        description: "Configuration file loaded successfully.",
-                      });
-                    }
-                  }}
-                />
-              </div>
-            </div>
-          </Card>
-        </div>
+    <ToolLayout
+      title="LLM Social Experiment Lab"
+      description="Design and conduct sophisticated social experiments using LLM participants"
+    >
+      <div className="animate-fade-in">
+        <ExperimentForm
+          purpose={purpose}
+          setPurpose={setPurpose}
+          methodology={methodology}
+          setMethodology={setMethodology}
+          participantCount={participantCount}
+          setParticipantCount={setParticipantCount}
+        />
 
         <div className="flex justify-center">
           <Button
@@ -118,15 +66,15 @@ const ExperimentLab = () => {
         </div>
 
         <div className="mt-8">
-          <Card className="p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20">
-            <h3 className="text-xl font-semibold mb-4">Results</h3>
+          <Card className="p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 hover:border-toolz-blue/40 transition-all duration-300">
+            <h3 className="text-xl font-semibold mb-4 text-white">Results</h3>
             <p className="text-gray-300">
               Run the experiment to see participant responses and analysis here.
             </p>
           </Card>
         </div>
       </div>
-    </div>
+    </ToolLayout>
   );
 };
 

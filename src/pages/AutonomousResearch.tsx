@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { ToolLayout } from "@/components/ToolLayout";
+import { ControlPanel } from "@/components/autonomous-research/ControlPanel";
+import { AgentStatus } from "@/components/autonomous-research/AgentStatus";
+import { OutputLog } from "@/components/autonomous-research/OutputLog";
 
 const AutonomousResearch = () => {
   const [apiKey, setApiKey] = useState("");
@@ -161,70 +163,34 @@ const AutonomousResearch = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-toolz-dark to-toolz-dark/80 min-h-screen">
-      <div className="space-y-6">
-        <div className="bg-white/10 backdrop-blur-xl p-6 rounded-lg border border-toolz-blue/20">
-          <h3 className="text-xl font-bold mb-4 text-white">AI Research System Control Panel</h3>
-          <div className="flex gap-4 flex-wrap">
-            <Input
-              type="text"
-              placeholder="Enter Google AI API Key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="flex-1 min-w-[300px] bg-white/5 border-toolz-blue/20 text-white"
-            />
-            <Button
-              onClick={startResearch}
-              className="bg-toolz-blue hover:bg-toolz-blue/80"
-            >
-              Start Research
-            </Button>
-            <Button
-              onClick={startReflection}
-              className="bg-toolz-blue hover:bg-toolz-blue/80"
-            >
-              Start Reflection
-            </Button>
-            <Button
-              onClick={toggleAutonomousLoop}
-              className="bg-toolz-blue hover:bg-toolz-blue/80"
-            >
-              {isAutonomousLoopRunning ? "Stop" : "Start"} Autonomous Loop
-            </Button>
-          </div>
-        </div>
+    <ToolLayout
+      title="Autonomous Research System"
+      description="AI-powered autonomous research system using Google's Gemini AI"
+    >
+      <div className="space-y-6 animate-fade-in">
+        <ControlPanel
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          startResearch={startResearch}
+          startReflection={startReflection}
+          isAutonomousLoopRunning={isAutonomousLoopRunning}
+          toggleAutonomousLoop={toggleAutonomousLoop}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {Object.entries(agents).map(([id, agent]) => (
-            <div
+            <AgentStatus
               key={id}
-              className="bg-white/10 backdrop-blur-xl p-6 rounded-lg border border-toolz-blue/20"
-            >
-              <h4 className="text-lg font-semibold mb-2 text-white">
-                {id.replace(/([A-Z])/g, " $1").trim()}
-              </h4>
-              <div className="text-gray-300 italic mb-2">
-                Status: {agent.status}
-              </div>
-              <div className="space-y-1">
-                {agent.goals.map((goal, index) => (
-                  <div key={index} className="text-sm text-gray-400">
-                    {goal}
-                  </div>
-                ))}
-              </div>
-            </div>
+              id={id}
+              status={agent.status}
+              goals={agent.goals}
+            />
           ))}
         </div>
 
-        <div className="bg-white/10 backdrop-blur-xl p-6 rounded-lg border border-toolz-blue/20">
-          <h3 className="text-xl font-bold mb-4 text-white">System Output</h3>
-          <pre className="h-[300px] overflow-y-auto bg-black/30 p-4 rounded-lg text-gray-300 font-mono text-sm">
-            {outputLog.join("\n")}
-          </pre>
-        </div>
+        <OutputLog logs={outputLog} />
       </div>
-    </div>
+    </ToolLayout>
   );
 };
 
