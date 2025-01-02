@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ToolLayout } from "@/components/ToolLayout";
 import { ExperimentForm } from "@/components/experiment-lab/ExperimentForm";
+import { ExperimentResults } from "@/components/experiment-lab/ExperimentResults";
 
 const ExperimentLab = () => {
   const { toast } = useToast();
@@ -11,6 +12,7 @@ const ExperimentLab = () => {
   const [purpose, setPurpose] = useState("");
   const [methodology, setMethodology] = useState("");
   const [participantCount, setParticipantCount] = useState(5);
+  const [results, setResults] = useState<string[]>([]);
 
   const handleStartExperiment = async () => {
     if (!purpose || !methodology) {
@@ -24,10 +26,22 @@ const ExperimentLab = () => {
 
     setLoading(true);
     try {
+      // Simulate participant responses
+      const simulatedResults = Array.from({ length: participantCount }, (_, i) => {
+        const responses = [
+          `Participant ${i + 1} observed that ${purpose.slice(0, 30)}...`,
+          `Their behavior aligned with ${methodology.slice(0, 30)}...`,
+          `Key findings suggest ${Math.random() > 0.5 ? "positive" : "negative"} outcomes.`
+        ];
+        return responses.join("\n");
+      });
+
       await new Promise(resolve => setTimeout(resolve, 2000));
+      setResults(simulatedResults);
+      
       toast({
         title: "Experiment Complete",
-        description: "Your experiment results are ready for review.",
+        description: `Generated responses from ${participantCount} participants.`,
       });
     } catch (error) {
       toast({
@@ -45,7 +59,7 @@ const ExperimentLab = () => {
       title="LLM Social Experiment Lab"
       description="Design and conduct sophisticated social experiments using LLM participants"
     >
-      <div className="animate-fade-in">
+      <div className="animate-fade-in space-y-8">
         <ExperimentForm
           purpose={purpose}
           setPurpose={setPurpose}
@@ -65,14 +79,7 @@ const ExperimentLab = () => {
           </Button>
         </div>
 
-        <div className="mt-8">
-          <Card className="p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 hover:border-toolz-blue/40 transition-all duration-300">
-            <h3 className="text-xl font-semibold mb-4 text-white">Results</h3>
-            <p className="text-gray-300">
-              Run the experiment to see participant responses and analysis here.
-            </p>
-          </Card>
-        </div>
+        <ExperimentResults results={results} />
       </div>
     </ToolLayout>
   );
