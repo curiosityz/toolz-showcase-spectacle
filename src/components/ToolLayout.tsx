@@ -21,7 +21,9 @@ export const ToolLayout = ({ children, title, description }: ToolLayoutProps) =>
             {description}
           </p>
         </div>
-        {children}
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6 shadow-xl">
+          {children}
+        </div>
       </div>
     </div>
   );
