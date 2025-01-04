@@ -58,11 +58,11 @@
   }
 
   input, textarea, select {
-    @apply bg-white/10 text-white border-white/20;
+    @apply bg-white/20 text-white border-white/40 placeholder:text-white/60;
   }
 
   button {
-    @apply text-white bg-toolz-blue hover:bg-toolz-blue/80;
+    @apply text-white bg-toolz-blue hover:bg-toolz-blue/80 shadow-md;
   }
 
   html.lenis {
