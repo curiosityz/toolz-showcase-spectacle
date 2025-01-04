@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ToolNavigation } from "@/components/ToolNavigation";
 import { AnalysisForm } from "@/components/landing-analyzer/AnalysisForm";
+import { AnalysisResults } from "@/components/landing-analyzer/AnalysisResults";
 import { fetchPageContent, analyzePage } from "@/utils/pageAnalysis";
 
 const LandingPageAnalyzer = () => {
@@ -42,8 +43,8 @@ const LandingPageAnalyzer = () => {
 
     setLoading(true);
     try {
-      const pageContent = await fetchPageContent(url);
-      const analysisResults = await analyzePage(pageContent, apiKey);
+      const pageData = await fetchPageContent(url);
+      const analysisResults = await analyzePage(pageData, apiKey);
       setResults(analysisResults);
       
       toast({
@@ -92,11 +93,9 @@ const LandingPageAnalyzer = () => {
         </Card>
 
         {results && (
-          <Card className="mt-8 p-6 bg-white/10 backdrop-blur-xl border-toolz-blue/20 animate-fade-in">
-            <pre className="text-sm text-gray-300 overflow-x-auto">
-              {JSON.stringify(results, null, 2)}
-            </pre>
-          </Card>
+          <div className="mt-8">
+            <AnalysisResults results={results} />
+          </div>
         )}
       </div>
     </div>

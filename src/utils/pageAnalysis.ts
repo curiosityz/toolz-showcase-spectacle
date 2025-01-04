@@ -1,6 +1,5 @@
 export const fetchPageContent = async (url: string) => {
   try {
-    // Use a CORS proxy to fetch the content
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
     const response = await fetch(proxyUrl);
 
@@ -11,72 +10,42 @@ export const fetchPageContent = async (url: string) => {
     const data = await response.json();
     
     // Create a temporary DOM element to parse the content
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = data.contents;
-
-    // Wait for a short time to allow potential client-side rendering
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Extract both static and dynamic content
-    const staticContent = tempDiv.innerText;
-    const scripts = Array.from(tempDiv.getElementsByTagName('script'));
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data.contents, 'text/html');
     
-    // Look for indicators of a React app
-    const isReactApp = scripts.some(script => 
-      script.src?.includes('react') || 
-      script.textContent?.includes('react') ||
-      data.contents.includes('root') ||
-      data.contents.includes('__next') ||
-      data.contents.includes('reactRoot')
-    );
+    // Wait longer for client-side rendering
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
-    // If it's a React app, try to get rendered content
-    if (isReactApp) {
-      try {
-        // Create an iframe to render the page (this will capture client-side rendered content)
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-        
-        if (iframe.contentWindow) {
-          iframe.contentWindow.document.open();
-          iframe.contentWindow.document.write(data.contents);
-          iframe.contentWindow.document.close();
-          
-          // Wait for React to render
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          
-          // Get the rendered content
-          const renderedContent = iframe.contentWindow.document.body.innerText;
-          document.body.removeChild(iframe);
-          
-          return renderedContent;
-        }
-      } catch (error) {
-        console.warn('Failed to capture rendered content:', error);
-        // Fall back to static content if rendering fails
-      }
-    }
+    // Extract metadata
+    const metadata = {
+      title: doc.title || '',
+      description: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+      ogImage: doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
+    };
 
-    return staticContent;
+    // Get all text content, including dynamically rendered content
+    const textContent = doc.body.innerText;
+    
+    // Remove script tags and their content
+    const scripts = doc.getElementsByTagName('script');
+    Array.from(scripts).forEach(script => script.remove());
+    
+    // Get the cleaned HTML content
+    const cleanContent = doc.body.innerHTML;
+
+    return {
+      metadata,
+      textContent,
+      htmlContent: cleanContent
+    };
   } catch (error) {
     console.error('Error fetching page:', error);
     throw new Error('Unable to fetch the page. Please check the URL and try again.');
   }
 };
 
-export const analyzePage = async (html: string, apiKey: string) => {
+export const analyzePage = async (pageData: any, apiKey: string) => {
   try {
-    // Extract metadata and analyze content
-    const metadata = {
-      title: document.title,
-      description: document.querySelector('meta[name="description"]')?.getAttribute('content') || '',
-      ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
-      isReactApp: false,
-      renderedContent: html,
-    };
-
-    // Call Gemini API with enhanced context
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
       {
@@ -85,23 +54,40 @@ export const analyzePage = async (html: string, apiKey: string) => {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `Analyze this webpage content and metadata. Note that this is a fully rendered version of the page including client-side content:
+              text: `Analyze this webpage content and metadata:
               
-              Content: ${html.substring(0, 5000)} // Limiting content length for API
+              Page Title: ${pageData.metadata.title}
+              Meta Description: ${pageData.metadata.description}
+              OG Image: ${pageData.metadata.ogImage}
               
-              Page Metadata:
-              - Title: ${metadata.title}
-              - Description: ${metadata.description}
-              - OG Image: ${metadata.ogImage}
+              Page Content:
+              ${pageData.textContent}
               
-              Please provide analysis on:
+              Please provide a detailed analysis in the following format:
+              
               1. Content Quality and Clarity
-              2. SEO Optimization
-              3. Technical Implementation
-              4. Conversion Potential
-              5. Specific recommendations for improvement
+              - Main message clarity
+              - Content organization
+              - Writing quality
               
-              Consider both the initial page load and the fully rendered content in your analysis.`,
+              2. SEO Optimization
+              - Title effectiveness
+              - Meta description quality
+              - Content keyword usage
+              
+              3. Technical Implementation
+              - Page structure
+              - Content loading
+              - Mobile responsiveness
+              
+              4. Conversion Potential
+              - Call-to-actions
+              - User journey clarity
+              - Trust indicators
+              
+              5. Key Recommendations
+              - Top 3 immediate improvements
+              - Long-term optimization suggestions`
             }],
           }],
         }),
@@ -115,7 +101,7 @@ export const analyzePage = async (html: string, apiKey: string) => {
     const analysisResult = await response.json();
     return {
       ...analysisResult,
-      metadata,
+      metadata: pageData.metadata,
     };
   } catch (error) {
     console.error("Analysis error:", error);
