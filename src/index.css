@@ -65,9 +65,18 @@
 }
 
 .gradient-primary {
-  @apply bg-gradient-to-r from-toolz-red to-toolz-blue;
+  @apply bg-gradient-to-r from-toolz-red to-toolz-blue text-white;
 }
 
 .gradient-secondary {
-  @apply bg-gradient-to-r from-toolz-dark to-toolz-gray;
+  @apply bg-gradient-to-r from-toolz-dark to-toolz-gray text-white;
+}
+
+/* Ensure text contrast */
+.bg-toolz-blue {
+  @apply text-toolz-dark;
+}
+
+.bg-white\/10, .bg-white\/20 {
+  @apply text-white;
 }

@@ -13,15 +13,20 @@ export const fetchPageContent = async (url: string) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(data.contents, 'text/html');
     
-    // Wait for client-side rendering (5 seconds)
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    // Check if it's a React app by looking for common indicators
+    // Enhanced React detection
     const isReactApp = Boolean(
       doc.getElementById('root') || 
       doc.querySelector('[data-reactroot]') ||
-      doc.querySelector('script[src*="react"]')
+      doc.querySelector('script[src*="react"]') ||
+      doc.querySelector('script[src*="bundle.js"]') ||
+      data.contents.includes('_reactRootContainer') ||
+      data.contents.includes('__NEXT_DATA__')
     );
+
+    // For React apps, wait longer for hydration
+    if (isReactApp) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
 
     // Extract metadata
     const metadata = {
@@ -30,16 +35,6 @@ export const fetchPageContent = async (url: string) => {
       ogImage: doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
       isReactApp,
     };
-
-    // Get all text content, including dynamically rendered content
-    const textContent = doc.body.innerText;
-    
-    // Remove script tags and their content
-    const scripts = doc.getElementsByTagName('script');
-    Array.from(scripts).forEach(script => script.remove());
-    
-    // Get the cleaned HTML content
-    const cleanContent = doc.body.innerHTML;
 
     // Create an iframe to capture rendered content
     const iframe = document.createElement('iframe');
@@ -53,19 +48,22 @@ export const fetchPageContent = async (url: string) => {
     }
 
     // Wait for potential dynamic content
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, isReactApp ? 5000 : 2000));
 
-    // Capture rendered content
-    const renderedContent = iframe.contentDocument?.body.innerHTML || '';
+    // Get all text content, including dynamically rendered content
+    const textContent = iframe.contentDocument?.body.innerText || doc.body.innerText;
     
+    // Get the cleaned HTML content
+    const cleanContent = iframe.contentDocument?.body.innerHTML || doc.body.innerHTML;
+
     // Clean up
     document.body.removeChild(iframe);
 
     return {
       metadata,
-      textContent: textContent || renderedContent,
+      textContent,
       htmlContent: cleanContent,
-      renderedContent
+      renderedContent: cleanContent
     };
   } catch (error) {
     console.error('Error fetching page:', error);
