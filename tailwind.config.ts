@@ -25,10 +25,15 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         toolz: {
-          blue: "#0EA5E9",
-          red: "#FF3B30",
-          dark: "#0A0A0A",
-          light: "#FFFFFF",
+          red: "hsla(360, 81%, 40%, 1)",      // cornell-red
+          blue: "hsla(193, 54%, 68%, 1)",     // sky-blue
+          gray: "hsla(199, 22%, 39%, 1)",     // paynes-gray
+          dark: "hsla(210, 31%, 5%, 1)",      // rich-black
+          darkred: "hsla(357, 73%, 22%, 1)",  // rosewood
+        },
+        gradients: {
+          'primary': 'linear-gradient(135deg, hsla(360, 81%, 40%, 1), hsla(193, 54%, 68%, 1))',
+          'secondary': 'linear-gradient(90deg, hsla(210, 31%, 5%, 1), hsla(199, 22%, 39%, 1))',
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
