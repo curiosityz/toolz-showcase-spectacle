@@ -1,6 +1,5 @@
 export const fetchPageContent = async (url: string) => {
   try {
-    // Use cors-anywhere as a fallback proxy if allorigins fails
     const proxyUrls = [
       `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
       `https://cors-anywhere.herokuapp.com/${url}`,
@@ -11,7 +10,6 @@ export const fetchPageContent = async (url: string) => {
     let data;
     let proxyError = null;
 
-    // Try each proxy until one works
     for (const proxyUrl of proxyUrls) {
       try {
         response = await fetch(proxyUrl);
@@ -31,11 +29,9 @@ export const fetchPageContent = async (url: string) => {
 
     const contents = data.contents || data.body || data;
     
-    // Create a temporary DOM element to parse the content
     const parser = new DOMParser();
     const doc = parser.parseFromString(typeof contents === 'string' ? contents : JSON.stringify(contents), 'text/html');
     
-    // Enhanced React detection with more indicators
     const reactIndicators = [
       () => Boolean(doc.getElementById('root')),
       () => Boolean(doc.querySelector('[data-reactroot]')),
@@ -61,7 +57,7 @@ export const fetchPageContent = async (url: string) => {
 
     console.log('React detection result:', isReactApp);
 
-    // Extract metadata
+    // Extract metadata first
     const metadata = {
       title: doc.title || '',
       description: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
@@ -69,32 +65,72 @@ export const fetchPageContent = async (url: string) => {
       isReactApp,
     };
 
-    // Create an iframe with longer timeout for React apps
+    // Create a hidden iframe for content capture
     const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
+    iframe.style.cssText = 'position: absolute; width: 1024px; height: 768px; top: -9999px; left: -9999px;';
     document.body.appendChild(iframe);
+
+    // Set viewport meta to ensure proper rendering
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1.0';
     
+    // Write content to iframe with necessary setup
     if (iframe.contentDocument) {
       iframe.contentDocument.open();
-      iframe.contentDocument.write(contents);
+      iframe.contentDocument.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <base href="${url}">
+            ${meta.outerHTML}
+            ${Array.from(doc.getElementsByTagName('link')).map(link => link.outerHTML).join('')}
+            ${Array.from(doc.getElementsByTagName('style')).map(style => style.outerHTML).join('')}
+          </head>
+          <body>
+            ${contents}
+          </body>
+        </html>
+      `);
       iframe.contentDocument.close();
     }
 
-    // Wait longer for React apps to hydrate
-    const waitTime = isReactApp ? 8000 : 3000;
-    await new Promise(resolve => setTimeout(resolve, waitTime));
+    // Function to check if content has been hydrated
+    const checkContent = () => {
+      const currentContent = iframe.contentDocument?.body.innerText || '';
+      return currentContent.length > 10 && !currentContent.includes('Loading') && 
+             iframe.contentDocument?.getElementById('root')?.children.length > 0;
+    };
 
-    // Get content after waiting for hydration
+    // Wait for content with timeout and periodic checks
+    let attempts = 0;
+    const maxAttempts = 20;
+    const checkInterval = 500;
+
+    while (attempts < maxAttempts) {
+      console.log(`Attempt ${attempts + 1}: Checking for hydrated content...`);
+      
+      if (checkContent()) {
+        console.log('Content successfully hydrated!');
+        break;
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, checkInterval));
+      attempts++;
+    }
+
+    // Capture the final content
     const textContent = iframe.contentDocument?.body.innerText || doc.body.innerText;
     const cleanContent = iframe.contentDocument?.body.innerHTML || doc.body.innerHTML;
 
     // Clean up
     document.body.removeChild(iframe);
 
-    console.log('Content captured:', {
+    console.log('Content capture complete:', {
       isReactApp,
       contentLength: textContent.length,
-      hasHydrated: textContent.length > doc.body.innerText.length
+      hasHydrated: textContent.length > doc.body.innerText.length,
+      attempts: attempts + 1
     });
 
     return {
