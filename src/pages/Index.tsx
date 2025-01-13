@@ -4,6 +4,10 @@ import Hero from "@/components/Hero";
 import ToolShowcase from "@/components/ToolShowcase";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from "gsap";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Index = () => {
   useEffect(() => {
@@ -20,6 +24,8 @@ const Index = () => {
     }
 
     requestAnimationFrame(raf);
+
+    ScrollTrigger.refresh();
 
     return () => {
       lenis.destroy();

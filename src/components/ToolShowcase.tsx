@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import gsap from "gsap";
 import { Brain, Globe, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const tools = [
   {
@@ -32,31 +35,42 @@ const ToolShowcase = () => {
   const showcaseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".tool-frame", {
-        scrollTrigger: {
-          trigger: showcaseRef.current,
-          start: "top center",
-          end: "bottom center",
-          scrub: 1,
-        },
-        y: 100,
-        opacity: 0,
-        stagger: 0.2,
-      });
+    console.log("ToolShowcase component useEffect triggered"); // Debugging log
 
-      gsap.from(".tool-description", {
-        scrollTrigger: {
-          trigger: ".tool-description",
-          start: "top bottom",
-          toggleActions: "play none none reverse",
-        },
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        stagger: 0.3,
+    const ctx = gsap.context(() => {
+      tools.forEach((tool, index) => {
+        const toolElement = showcaseRef.current?.querySelectorAll('.tool-frame')[index];
+        const descriptionElement = showcaseRef.current?.querySelectorAll('.tool-description')[index];
+
+        if (toolElement && descriptionElement) {
+          gsap.from(toolElement, {
+            scrollTrigger: {
+              trigger: toolElement,
+              start: "top 80%",
+              toggleActions: "play none none none"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+          });
+
+          gsap.from(descriptionElement, {
+            scrollTrigger: {
+              trigger: descriptionElement,
+              start: "top 80%",
+              toggleActions: "play none none none"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out",
+          });
+        }
       });
     });
+
+    ScrollTrigger.refresh();
 
     return () => ctx.revert();
   }, []);
