@@ -11,12 +11,22 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Set initial visibility
+      if (titleRef.current) titleRef.current.style.visibility = 'visible';
+      if (subtitleRef.current) subtitleRef.current.style.visibility = 'visible';
+
       // Animate title
       gsap.from(titleRef.current, {
         y: 100,
         opacity: 0,
         duration: 1,
         ease: "power4.out",
+        scrollTrigger: {
+          trigger: titleRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reverse",
+        }
       });
 
       // Animate subtitle
@@ -26,6 +36,12 @@ const Hero = () => {
         duration: 1,
         delay: 0.5,
         ease: "power4.out",
+        scrollTrigger: {
+          trigger: subtitleRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          toggleActions: "play none none reverse",
+        }
       });
 
       // Parallax effect on scroll
@@ -87,12 +103,14 @@ const Hero = () => {
         <h1
           ref={titleRef}
           className="text-6xl md:text-7xl font-bold text-white mb-6"
+          style={{ visibility: 'hidden' }}
         >
           The Future of AI Tools
         </h1>
         <p
           ref={subtitleRef}
           className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto"
+          style={{ visibility: 'hidden' }}
         >
           Discover our suite of powerful LLM-powered tools designed to revolutionize your workflow
         </p>
