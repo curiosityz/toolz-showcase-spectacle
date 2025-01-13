@@ -10,49 +10,49 @@ const Hero = () => {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
+    if (!heroRef.current || !titleRef.current || !subtitleRef.current) return;
+
     const ctx = gsap.context(() => {
       // Set initial states
       gsap.set([titleRef.current, subtitleRef.current], { 
         opacity: 0,
-        y: 50,
-        immediateRender: true
+        y: 50
       });
 
       // Create a timeline for the animations
-      const tl = gsap.timeline({
+      gsap.to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.out",
         scrollTrigger: {
           trigger: heroRef.current,
-          start: "top center",
-          end: "bottom center",
-          toggleActions: "play none none none",
-          once: true // Only animate once
+          start: "top 80%",
+          toggleActions: "play none none none"
         }
       });
 
-      // Add animations to timeline
-      tl.to(titleRef.current, {
+      gsap.to(subtitleRef.current, {
         opacity: 1,
         y: 0,
         duration: 1,
-        ease: "power4.out"
-      })
-      .to(subtitleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power4.out"
-      }, "-=0.5");
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none"
+        }
+      });
 
       // Simple parallax effect
       gsap.to(heroRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "bottom top",
           scrub: true
         },
         y: (i, target) => -target.offsetHeight * 0.2,
-        ease: "none",
+        ease: "none"
       });
     });
 
