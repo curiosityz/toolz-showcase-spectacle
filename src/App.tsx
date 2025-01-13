@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="min-h-screen w-full">
+      <div className="flex flex-col min-h-screen">
         <Helmet>
           <meta name="robots" content="index, follow" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,12 +24,14 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/landing-page-analyzer" element={<LandingPageAnalyzer />} />
-            <Route path="/autonomous-research" element={<AutonomousResearch />} />
-            <Route path="/experiment-lab" element={<ExperimentLab />} />
-          </Routes>
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/landing-page-analyzer" element={<LandingPageAnalyzer />} />
+              <Route path="/autonomous-research" element={<AutonomousResearch />} />
+              <Route path="/experiment-lab" element={<ExperimentLab />} />
+            </Routes>
+          </main>
         </BrowserRouter>
       </div>
     </TooltipProvider>

@@ -26,17 +26,16 @@
     --radius: 0.5rem;
   }
   
-  html, body {
-    @apply min-h-screen w-full m-0 p-0;
-    overflow-x: hidden;
+  html {
+    @apply h-full antialiased;
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply h-full bg-background text-foreground;
   }
 
   #root {
-    @apply min-h-screen w-full;
+    @apply h-full flex flex-col;
   }
 
   input, textarea, select {
