@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ToolCardProps {
   title: string;
@@ -14,6 +17,8 @@ const ToolCard = ({ title, description, icon: Icon, delay = 0 }: ToolCardProps) 
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("ToolCard component useEffect triggered"); // Debugging log
+
     gsap.from(cardRef.current, {
       scrollTrigger: {
         trigger: cardRef.current,
@@ -26,6 +31,8 @@ const ToolCard = ({ title, description, icon: Icon, delay = 0 }: ToolCardProps) 
       delay,
       ease: "power4.out",
     });
+
+    ScrollTrigger.refresh();
   }, [delay]);
 
   return (

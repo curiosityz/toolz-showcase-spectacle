@@ -12,16 +12,16 @@ const Hero = () => {
   useEffect(() => {
     if (!heroRef.current || !titleRef.current || !subtitleRef.current) return;
 
+    console.log("Hero component useEffect triggered"); // Debugging log
+
     const ctx = gsap.context(() => {
       // Set initial states
       gsap.set([titleRef.current, subtitleRef.current], { 
-        opacity: 0,
         y: 50
       });
 
       // Create a timeline for the animations
       gsap.to(titleRef.current, {
-        opacity: 1,
         y: 0,
         duration: 1,
         ease: "power4.out",
@@ -33,7 +33,6 @@ const Hero = () => {
       });
 
       gsap.to(subtitleRef.current, {
-        opacity: 1,
         y: 0,
         duration: 1,
         ease: "power4.out",
@@ -55,6 +54,8 @@ const Hero = () => {
         ease: "none"
       });
     });
+
+    ScrollTrigger.refresh();
 
     return () => ctx.revert();
   }, []);
