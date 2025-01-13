@@ -11,46 +11,45 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Set initial visibility
-      if (titleRef.current) titleRef.current.style.visibility = 'visible';
-      if (subtitleRef.current) subtitleRef.current.style.visibility = 'visible';
-
-      // Animate title
-      gsap.from(titleRef.current, {
-        y: 100,
+      // Set initial states
+      gsap.set([titleRef.current, subtitleRef.current], { 
         opacity: 0,
-        duration: 1,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          toggleActions: "play none none reverse",
-        }
-      });
-
-      // Animate subtitle
-      gsap.from(subtitleRef.current, {
         y: 50,
-        opacity: 0,
-        duration: 1,
-        delay: 0.5,
-        ease: "power4.out",
+        immediateRender: true
+      });
+
+      // Create a timeline for the animations
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: subtitleRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          toggleActions: "play none none reverse",
+          trigger: heroRef.current,
+          start: "top center",
+          end: "bottom center",
+          toggleActions: "play none none none",
+          once: true // Only animate once
         }
       });
 
-      // Parallax effect on scroll
+      // Add animations to timeline
+      tl.to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.out"
+      })
+      .to(subtitleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.out"
+      }, "-=0.5");
+
+      // Simple parallax effect
       gsap.to(heroRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: true,
+          scrub: true
         },
         y: (i, target) => -target.offsetHeight * 0.2,
         ease: "none",
@@ -103,14 +102,12 @@ const Hero = () => {
         <h1
           ref={titleRef}
           className="text-6xl md:text-7xl font-bold text-white mb-6"
-          style={{ visibility: 'hidden' }}
         >
           The Future of AI Tools
         </h1>
         <p
           ref={subtitleRef}
           className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto"
-          style={{ visibility: 'hidden' }}
         >
           Discover our suite of powerful LLM-powered tools designed to revolutionize your workflow
         </p>
