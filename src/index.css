@@ -26,13 +26,17 @@
     --radius: 0.5rem;
   }
   
-  * {
-    @apply border-border;
+  html, body {
+    @apply min-h-screen w-full m-0 p-0;
+    overflow-x: hidden;
   }
   
   body {
     @apply bg-background text-foreground;
-    overflow-x: hidden;
+  }
+
+  #root {
+    @apply min-h-screen w-full;
   }
 
   input, textarea, select {
@@ -41,26 +45,6 @@
 
   button {
     @apply text-white bg-toolz-red hover:bg-toolz-darkred shadow-md transition-colors;
-  }
-
-  html.lenis {
-    height: auto;
-  }
-
-  .lenis.lenis-smooth {
-    scroll-behavior: auto;
-  }
-
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-
-  .lenis.lenis-scrolling iframe {
-    pointer-events: none;
   }
 }
 
