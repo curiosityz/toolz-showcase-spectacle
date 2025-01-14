@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { UpgradeDialog } from "./UpgradeDialog";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -113,6 +114,7 @@ const ToolShowcase = () => {
             >
               Sign In
             </Button>
+            <UpgradeDialog />
           </div>
         </div>
 

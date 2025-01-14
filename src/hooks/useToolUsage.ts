@@ -7,6 +7,7 @@ export const useToolUsage = (toolName: string) => {
   const [freeLimit, setFreeLimit] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [canUse, setCanUse] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export const useToolUsage = (toolName: string) => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) return;
 
-        const [{ data: usage }, { data: limits }] = await Promise.all([
+        const [{ data: usage }, { data: limits }, { data: profile }] = await Promise.all([
           supabase
             .from("tool_usage")
             .select("*")
@@ -25,15 +26,22 @@ export const useToolUsage = (toolName: string) => {
             .from("tool_limits")
             .select("*")
             .eq("tool_name", toolName)
+            .single(),
+          supabase
+            .from("profiles")
+            .select("subscription_status")
+            .eq("id", session.user.id)
             .single()
         ]);
 
         const usageCount = usage?.length || 0;
         const freeLimit = limits?.free_tier_limit || 0;
+        const isPro = profile?.subscription_status === 'pro';
         
         setUsageCount(usageCount);
         setFreeLimit(freeLimit);
-        setCanUse(usageCount < freeLimit);
+        setIsSubscribed(isPro);
+        setCanUse(isPro || usageCount < freeLimit);
       } catch (error) {
         console.error("Error fetching usage:", error);
       } finally {
@@ -49,7 +57,7 @@ export const useToolUsage = (toolName: string) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return false;
 
-      if (usageCount >= freeLimit) {
+      if (!isSubscribed && usageCount >= freeLimit) {
         toast({
           title: "Usage Limit Reached",
           description: "Please upgrade to continue using this tool",
@@ -68,7 +76,7 @@ export const useToolUsage = (toolName: string) => {
       if (error) throw error;
 
       setUsageCount(prev => prev + 1);
-      setCanUse(usageCount + 1 < freeLimit);
+      setCanUse(isSubscribed || (usageCount + 1 < freeLimit));
       return true;
     } catch (error) {
       console.error("Error tracking usage:", error);
@@ -81,6 +89,7 @@ export const useToolUsage = (toolName: string) => {
     freeLimit,
     isLoading,
     canUse,
+    isSubscribed,
     trackUsage
   };
 };
