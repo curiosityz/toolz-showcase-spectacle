@@ -2,9 +2,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { AuthGuard } from "@/components/AuthGuard";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import LandingPageAnalyzer from "./pages/LandingPageAnalyzer";
@@ -12,6 +14,67 @@ import AutonomousResearch from "./pages/AutonomousResearch";
 import ExperimentLab from "./pages/ExperimentLab";
 
 const queryClient = new QueryClient();
+
+const AppRoutes = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session);
+      if (event === 'SIGNED_IN') {
+        console.log("User signed in, redirecting to /");
+        navigate('/');
+      } else if (event === 'SIGNED_OUT') {
+        console.log("User signed out, redirecting to /auth");
+        navigate('/auth');
+      }
+    });
+
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session);
+      if (!session) {
+        console.log("No session found, redirecting to /auth");
+        navigate('/auth');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  return (
+    <main className="flex-1">
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Index />} />
+        <Route
+          path="/landing-page-analyzer"
+          element={
+            <AuthGuard>
+              <LandingPageAnalyzer />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/autonomous-research"
+          element={
+            <AuthGuard>
+              <AutonomousResearch />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/experiment-lab"
+          element={
+            <AuthGuard>
+              <ExperimentLab />
+            </AuthGuard>
+          }
+        />
+      </Routes>
+    </main>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,36 +89,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <main className="flex-1">
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Index />} />
-              <Route
-                path="/landing-page-analyzer"
-                element={
-                  <AuthGuard>
-                    <LandingPageAnalyzer />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/autonomous-research"
-                element={
-                  <AuthGuard>
-                    <AutonomousResearch />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/experiment-lab"
-                element={
-                  <AuthGuard>
-                    <ExperimentLab />
-                  </AuthGuard>
-                }
-              />
-            </Routes>
-          </main>
+          <AppRoutes />
         </BrowserRouter>
       </div>
     </TooltipProvider>
