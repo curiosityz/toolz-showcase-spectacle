@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { AuthGuard } from "@/components/AuthGuard";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import LandingPageAnalyzer from "./pages/LandingPageAnalyzer";
 import AutonomousResearch from "./pages/AutonomousResearch";
 import ExperimentLab from "./pages/ExperimentLab";
@@ -26,10 +28,32 @@ const App = () => (
         <BrowserRouter>
           <main className="flex-1">
             <Routes>
+              <Route path="/auth" element={<Auth />} />
               <Route path="/" element={<Index />} />
-              <Route path="/landing-page-analyzer" element={<LandingPageAnalyzer />} />
-              <Route path="/autonomous-research" element={<AutonomousResearch />} />
-              <Route path="/experiment-lab" element={<ExperimentLab />} />
+              <Route
+                path="/landing-page-analyzer"
+                element={
+                  <AuthGuard>
+                    <LandingPageAnalyzer />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/autonomous-research"
+                element={
+                  <AuthGuard>
+                    <AutonomousResearch />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/experiment-lab"
+                element={
+                  <AuthGuard>
+                    <ExperimentLab />
+                  </AuthGuard>
+                }
+              />
             </Routes>
           </main>
         </BrowserRouter>

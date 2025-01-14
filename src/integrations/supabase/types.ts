@@ -9,7 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_subscribed: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          is_subscribed?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_subscribed?: boolean | null
+        }
+        Relationships: []
+      }
+      tool_limits: {
+        Row: {
+          free_tier_limit: number
+          tool_name: string
+        }
+        Insert: {
+          free_tier_limit: number
+          tool_name: string
+        }
+        Update: {
+          free_tier_limit?: number
+          tool_name?: string
+        }
+        Relationships: []
+      }
+      tool_usage: {
+        Row: {
+          id: string
+          tool_name: string
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          tool_name: string
+          used_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          tool_name?: string
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
