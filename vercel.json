@@ -9,7 +9,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; frame-ancestors 'self' https://toolz.digital https://www.toolz.digital https://*.toolz.digital; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+          "value": "default-src 'self'; connect-src 'self' https://*.supabase.co https://lcdxpngzterrgqgdnuxz.supabase.co; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; frame-ancestors 'self' https://toolz.digital https://www.toolz.digital https://*.toolz.digital; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
         },
         {
           "key": "Access-Control-Allow-Origin",
