@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UpgradeDialog } from "./UpgradeDialog";
+import { UserMenu } from "./UserMenu";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -107,13 +108,7 @@ const ToolShowcase = () => {
             Experience Our Tools
           </h2>
           <div className="flex gap-4">
-            <Button
-              variant="outline"
-              className="text-white border-toolz-blue hover:bg-toolz-blue/20"
-              onClick={() => navigate("/auth")}
-            >
-              Sign In
-            </Button>
+            <UserMenu />
             <UpgradeDialog />
           </div>
         </div>
